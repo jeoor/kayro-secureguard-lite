@@ -28,7 +28,7 @@
 ## 残余风险
 
 - 有意移除厂商完整性检查，会降低 SecureGuard 的检测能力。
-- initrc 代码在 KSU 安全模式下仍会执行；early 在 `post-fs` 运行，安全模式挡不住那次 `rmmod`。代码有超时、不阻塞、不改分区，但这是 initrc 方案的固有风险。
+- initrc 代码在 KSU 安全模式下仍会执行；early 在 `post-fs` 运行，安全模式挡不住那次 `rmmod`。代码有超时、不阻塞、不改分区，但这是 initrc 方案的固有风险。early 必须在 `post-fs`：目标约 1.6s 加载、`ksud` 约 3.4s 被拦、`post-fs-data` 约 5s 才跑。
 - 启动早期卸载厂商安全模块，长期/OTA 稳定性未验证（两轮重启通过）。
 - OTA、late-load、正常解锁、修补过 vendor_boot 的变体未验证。
 - 卡片是快照；后期变化需点 Action 刷新。

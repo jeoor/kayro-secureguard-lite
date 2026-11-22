@@ -9,14 +9,14 @@
 | 30 次 `su` | 新增 `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 常驻进程 | 无 `ksud`/`kayro` 进程 |
 | 唤醒告警 | `dumpsys alarm` 无 ksud/kayro 条目 |
-| 卡片 | v2.0.1 动态描述正确；v2.0.2 Action 未实机安装 |
+| 卡片 | v2.0.1 动态描述正确；v2.0.2 仅 Action/版本变更 |
 | 假回锁 | green / 1 / locked 在每次重启后保持 |
 | vendor_boot | `oplus_secure_guard_new.ko` 未改动 |
 | Action | 目标未加载；执行拦截 0；need kill 0；涉及 ksud 0 |
 | 模块字段 | enabled=true、action=true、web=false、update=false |
 | ZIP | 2,891 字节；SHA-256 `4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03` |
 
-> v2.0.2 只改 Action 诊断与版本；启动卸载逻辑与 v2.0.1 相同。按用户要求未在实机安装 v2.0.2。Action 的 UNKNOWN 分支为代码审查，未强制制造不可读场景。
+> v2.0.2 仅 Action 诊断与版本变更；启动逻辑与 v2.0.1 相同。Action 的 UNKNOWN 分支为代码审查，未强制制造不可读场景。
 
 ## 未覆盖
 

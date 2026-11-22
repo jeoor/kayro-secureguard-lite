@@ -33,7 +33,7 @@
 | 目标模块 | 连续重启后均未加载；256s 后仍为 0 |
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 常驻进程/告警 | 无 `ksud`/`kayro` 进程；无相关 alarm |
-| 卡片 | v2.0.1 动态描述正确；v2.0.2 只改 Action/版本，未实机安装 |
+| 卡片 | v2.0.1 动态描述正确；v2.0.2 仅 Action/版本变更 |
 | 假回锁属性 | `verifiedbootstate=green`、`flash.locked=1`、`vbmeta.device_state=locked` |
 | vendor_boot | `oplus_secure_guard_new.ko` 92,000 字节，原样存在 |
 | 模块字段 | enabled=true、action=true、web=false、update=false |

@@ -23,6 +23,7 @@ KernelSU 模块 · v2.0.2 · MIT
 
 - KernelSU `initrc` 注入两个一次性服务。
 - `kayro_sg_early`：`on post-fs`，ksu 域轮询；目标出现即非强制 `rmmod`，失败重试，最多 6 秒。
+- 为什么是 post-fs：目标约 1.6s 加载、`ksud` 约 3.4s 被拦、`post-fs-data` 约 5s 才跑；模块脚本会太晚。
 - `kayro_sg_final`：`sys.boot_completed=1` 复核一次，并刷新卡片。
 - 不用 `block_modules`/boot-patch：`oplus_secure_guard_new` 在 `modules.load.recovery` 中，启动期 block 有 recovery/假回锁风险。
 - 不用 `rmmod -f`：被引用时强制卸载可能崩溃。
@@ -44,7 +45,7 @@ KernelSU 模块 · v2.0.2 · MIT
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 假回锁 | green / 1 / locked 保持 |
 
-v2.0.2 只修 Action/版本，未实机安装。  
+v2.0.2 仅 Action/版本变更；启动逻辑与 v2.0.1 相同。
 19.5s 的 `KERNEL_SECURITY_CHECK: Added` 是 560 个 `.ko` 表登记，不是加载。
 
 ## 安装
