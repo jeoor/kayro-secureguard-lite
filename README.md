@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/jeoor/kayro-secureguard-lite)](https://github.com/jeoor/kayro-secureguard-lite/releases/latest)
 [![License](https://img.shields.io/github/license/jeoor/kayro-secureguard-lite)](LICENSE)
 
-KernelSU 模块 · v2.0.6 · MIT
+KernelSU 模块 · v2.0.7 · MIT
 
 > 适用：存在 `oplus_secure_guard_new` 的 OPlus ColorOS 设备；KernelSU 需支持 initrc 注入
 > 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）
@@ -27,17 +27,17 @@ KernelSU 模块 · v2.0.6 · MIT
 - KernelSU `initrc` 注入一个一次性服务 `kayro_sg_early`。
 - `on post-fs`，ksu 域轮询；目标出现即非强制 `rmmod`，失败重试，最多 6 秒。
 - 为什么是 post-fs：目标约 1.6s 加载、`ksud` 约 3.4s 被拦、`post-fs-data` 约 5s 才跑；模块脚本会太晚。
-- boot-completed 会先兜底再卸一次，然后写卡片结论（`✅ 已完成卸载` / `⚠️ 未卸载`）；不统计检测信息，检测只在点 Action 时运行。
+- boot-completed 会先兜底再卸一次，然后写卡片结论（`✅ 已完成卸载` / `⚠️ 未卸载` / `⚠️ 状态未知`）；不统计检测信息，检测只在点 Action 时运行。
 - 不用 `block_modules`/boot-patch：`oplus_secure_guard_new` 在 `modules.load.recovery` 中，启动期 block 有 recovery/假回锁风险。
 - 不用 `rmmod -f`：被引用时强制卸载可能崩溃。
 
 ## 卡片与检测
 
-开机完成写一次卡片结论：`✅ 已完成卸载` / `⚠️ 未卸载`，不显示 ksud 检测信息。点 Action（三角）运行一次检测，输出目标、执行拦截、`need kill`、涉及 `ksud`、`ksud` 执行状态。
+开机完成写一次卡片结论：`✅ 已完成卸载` / `⚠️ 未卸载` / `⚠️ 状态未知`，不显示 ksud 检测信息。点 Action（三角）运行一次检测，输出目标、执行拦截、`need kill`、涉及 `ksud`、`ksud` 执行状态。
 
 不常驻、不实时监控。
 
-## 实测（v2.0.1/v2.0.2，early 与 v2.0.6 相同）
+## 实测（v2.0.1/v2.0.2，early 与 v2.0.7 相同）
 
 | 项目 | 结果 |
 |---|---|
@@ -46,17 +46,17 @@ KernelSU 模块 · v2.0.6 · MIT
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 假回锁 | green / 1 / locked 保持 |
 
-v2.0.6 增加 boot-completed 兜底卸载；early 自动卸载逻辑不变。
+v2.0.7 修复卡片/Action 误报；early 与 boot-completed 卸载逻辑不变。
 19.5s 的 `KERNEL_SECURITY_CHECK: Added` 是 560 个 `.ko` 表登记，不是加载。
 
 ## 安装
 
-1. 下载 [v2.0.6 Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.6) 的 ZIP。
+1. 下载 [v2.0.7 Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.7) 的 ZIP。
 2. 管理器安装，重启；点 Action 运行检测。
 
 ```text
-2,948 bytes
-SHA-256 c045be5f0e72b6f6e9c330921f98ac4d707083d6a49a9b76c91cd1c64e3bcd21
+3,014 bytes
+SHA-256 ce2855fb90df3d1f74002800b8e0b6257974f6930199e40165d3d899746a86bc
 ```
 
 只从本仓库 Release 下载并核对 SHA；不要用第三方转存。  
@@ -78,6 +78,6 @@ pwsh -NoProfile -File ./tests/verify.ps1   # 连续构建两次，校验一致�
 
 ## 链接
 
-[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.6) · [Issues](https://github.com/jeoor/kayro-secureguard-lite/issues) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
+[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.7) · [Issues](https://github.com/jeoor/kayro-secureguard-lite/issues) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
 
 参考：[KernelSU initrc](https://kernelsu.org/guide/module.html#initrc-injection) · [KernelSU #3908](https://github.com/tiann/KernelSU/pull/3908) · [gbl_root_canoe](https://github.com/1vivy/gbl_root_canoe) · [inte 归属](https://www.zhihu.com/question/2089675358908040541/answer/2092690033698460930)

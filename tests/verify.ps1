@@ -31,7 +31,7 @@ try {
     finally { $archive.Dispose() }
 
     $prop = Get-Content 'module/module.prop' -Raw
-    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.6', 'versionCode=20006')) {
+    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.7', 'versionCode=20007')) {
         if (!$prop.Contains($needle)) { throw "module.prop missing $needle" }
     }
 
@@ -48,7 +48,7 @@ try {
         if (!$action.Contains($needle)) { throw "action.sh missing $needle" }
     }
     $boot = Get-Content 'module/boot-completed.sh' -Raw
-    foreach ($needle in @('oplus_secure_guard_new', '✅', '⚠️', '已完成卸载', 'override.description')) {
+    foreach ($needle in @('oplus_secure_guard_new', '✅', '⚠️', '状态未知', '自动卸载 oplus_secure_guard_new', 'override.description')) {
         if (!$boot.Contains($needle)) { throw "boot-completed.sh missing $needle" }
     }
 

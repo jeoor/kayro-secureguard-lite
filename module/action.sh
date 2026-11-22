@@ -2,7 +2,7 @@
 # Action：单次诊断，不常驻、不写配置。
 T=oplus_secure_guard_new
 KSUD=/data/adb/ksud
-V=2.0.6
+V=2.0.7
 
 if [ -r /proc/modules ]; then
     if grep -q "^$T " /proc/modules 2>/dev/null; then loaded=1; else loaded=0; fi
@@ -10,8 +10,8 @@ else
     loaded=unknown
 fi
 
-if dmesg >/dev/null 2>&1; then
-    set -- $(dmesg 2>/dev/null | awk '
+if _dmesg=$(dmesg 2>/dev/null); then
+    set -- $(printf '%s\n' "$_dmesg" | awk '
         /secureguard_new/ {
             if (/execve_block/) b++
             if (/need kill/) { k++; if (/ksud/) s++ }
@@ -40,8 +40,8 @@ case "$loaded" in
     0)
         if [ "$b" = unknown ]; then
             printf '结论：目标未加载，但内核日志不可读，无法判断历史拦截。\n'
-        elif [ "$k" -gt 0 ]; then
-            printf '结论：目标已卸载；本启动周期卸载前有 %s 次 need kill。\n' "$k"
+        elif [ "$b" -gt 0 ] || [ "$k" -gt 0 ]; then
+            printf '结论：本启动周期观察到 SecureGuard 拦截记录（execve_block %s，need kill %s）。\n' "$b" "$k"
         else
             printf '结论：当前快照未观察到 SecureGuard 拦截 ksud；不保证未来或其它进程。\n'
         fi ;;
