@@ -5,7 +5,7 @@
 KernelSU 模块 · v2.0.2 · MIT
 
 > 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）  
-> 定位：实测版（Pre-release），不是长期稳定版
+> 定位：实测版
 
 ## 做什么
 
