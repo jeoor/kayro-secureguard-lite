@@ -2,10 +2,11 @@
 param([string] $OutputDirectory = (Join-Path $PSScriptRoot 'dist'))
 
 $ErrorActionPreference = 'Stop'
-$version = 'v2.0.3'
+$version = 'v2.0.4'
 $entries = [ordered]@{
     'module.prop'        = @{ Path = 'module/module.prop'; Mode = (0x81a4 -shl 16) }
     'action.sh'          = @{ Path = 'module/action.sh'; Mode = (0x81ed -shl 16) }
+    'boot-completed.sh'  = @{ Path = 'module/boot-completed.sh'; Mode = (0x81ed -shl 16) }
     'initrc/kayro_secureguard.rc' = @{ Path = 'module/initrc/kayro_secureguard.rc'; Mode = (0x81a4 -shl 16) }
     'LICENSE'            = @{ Path = 'LICENSE'; Mode = (0x81a4 -shl 16) }
 }

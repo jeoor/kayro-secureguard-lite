@@ -22,7 +22,7 @@ try {
     $archive = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
     try {
         $names = $archive.Entries.FullName -join ','
-        $expected = 'module.prop,action.sh,initrc/kayro_secureguard.rc,LICENSE'
+        $expected = 'module.prop,action.sh,boot-completed.sh,initrc/kayro_secureguard.rc,LICENSE'
         if ($names -cne $expected) { throw "Unexpected ZIP entries: $names" }
         foreach ($entry in $archive.Entries) {
             if ($entry.Length -le 0) { throw "Empty ZIP entry: $($entry.FullName)" }
@@ -31,7 +31,7 @@ try {
     finally { $archive.Dispose() }
 
     $prop = Get-Content 'module/module.prop' -Raw
-    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.3', 'versionCode=20003')) {
+    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.4', 'versionCode=20004')) {
         if (!$prop.Contains($needle)) { throw "module.prop missing $needle" }
     }
 
@@ -46,6 +46,10 @@ try {
     $action = Get-Content 'module/action.sh' -Raw
     foreach ($needle in @('oplus_secure_guard_new', 'need kill')) {
         if (!$action.Contains($needle)) { throw "action.sh missing $needle" }
+    }
+    $boot = Get-Content 'module/boot-completed.sh' -Raw
+    foreach ($needle in @('oplus_secure_guard_new', '✅', '⚠️', '已完成卸载', 'override.description')) {
+        if (!$boot.Contains($needle)) { throw "boot-completed.sh missing $needle" }
     }
 
     Write-Output "OK $($zip.Name) $($zip.Length) bytes SHA-256 $hash1"
