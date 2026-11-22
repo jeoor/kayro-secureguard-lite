@@ -1,6 +1,8 @@
 # Kayro SecureGuard Lite
 
 [![CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/jeoor/kayro-secureguard-lite)](https://github.com/jeoor/kayro-secureguard-lite/releases/latest)
+[![License](https://img.shields.io/github/license/jeoor/kayro-secureguard-lite)](LICENSE)
 
 KernelSU 模块 · v2.0.2 · MIT
 
@@ -45,7 +47,7 @@ KernelSU 模块 · v2.0.2 · MIT
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 假回锁 | green / 1 / locked 保持 |
 
-v2.0.2 仅 Action/版本变更；启动逻辑与 v2.0.1 相同。
+v2.0.2 仅 Action/版本变更；启动逻辑与 v2.0.1 相同。  
 19.5s 的 `KERNEL_SECURITY_CHECK: Added` 是 560 个 `.ko` 表登记，不是加载。
 
 ## 安装
@@ -58,7 +60,15 @@ v2.0.2 仅 Action/版本变更；启动逻辑与 v2.0.1 相同。
 SHA-256 4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03
 ```
 
+只从本仓库 Release 下载并核对 SHA；不要用第三方转存。  
 卸载或禁用并重启，`oplus_secure_guard_new` 随系统恢复加载。
+
+## 开发
+
+```sh
+pwsh -NoProfile -File ./tests/verify.ps1   # 连续构建两次，校验一致性与 ZIP 内容
+```
+
 
 ## 边界
 
@@ -69,6 +79,6 @@ SHA-256 4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03
 
 ## 链接
 
-[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.2) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
+[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.2) · [Issues](https://github.com/jeoor/kayro-secureguard-lite/issues) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
 
 参考：[KernelSU initrc](https://kernelsu.org/guide/module.html#initrc-injection) · [KernelSU #3908](https://github.com/tiann/KernelSU/pull/3908) · [gbl_root_canoe](https://github.com/1vivy/gbl_root_canoe) · [inte 归属](https://www.zhihu.com/question/2089675358908040541/answer/2092690033698460930)

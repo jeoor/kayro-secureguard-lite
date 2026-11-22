@@ -6,13 +6,17 @@ $root = Split-Path $PSScriptRoot -Parent
 Push-Location $root
 try {
     & ./build.ps1 | Out-Null
-
     $zip = Get-ChildItem 'dist/kayro_secureguard-*.zip' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
     if (!$zip) { throw 'No module ZIP found.' }
+    $hash1 = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash.ToLowerInvariant()
 
-    $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash.ToLowerInvariant()
+    & ./build.ps1 | Out-Null
+    $zip2 = Get-ChildItem 'dist/kayro_secureguard-*.zip' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    $hash2 = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip2.FullName).Hash.ToLowerInvariant()
+    if ($hash1 -cne $hash2) { throw 'Build is not deterministic.' }
+
     $sha = (Get-Content "$($zip.FullName).sha256" -Raw).Trim()
-    if ($sha -notmatch "^$hash\s") { throw 'SHA-256 file does not match the ZIP.' }
+    if ($sha -notmatch "^$hash1\s") { throw 'SHA-256 file does not match the ZIP.' }
 
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $archive = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
@@ -46,6 +50,6 @@ try {
         if (!$action.Contains($needle)) { throw "action.sh missing $needle" }
     }
 
-    Write-Output "OK $($zip.Name) $($zip.Length) bytes SHA-256 $hash"
+    Write-Output "OK $($zip.Name) $($zip.Length) bytes SHA-256 $hash1"
 }
 finally { Pop-Location }

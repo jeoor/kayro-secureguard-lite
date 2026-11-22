@@ -9,6 +9,7 @@ RECOVERY.md
 RESEARCH.md
 SAFETY.md
 TESTS.md
+dist/
 dist/*.png
 *.log
 Thumbs.db
