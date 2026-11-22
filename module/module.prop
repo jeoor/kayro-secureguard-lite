@@ -1,6 +1,6 @@
 id=kayro_secureguard
 name=Kayro SecureGuard Lite
-version=v2.0.5
-versionCode=20005
+version=v2.0.6
+versionCode=20006
 author=Kayro
 description=开机自动卸载 oplus_secure_guard_new · 点击运行检测

@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/jeoor/kayro-secureguard-lite)](https://github.com/jeoor/kayro-secureguard-lite/releases/latest)
 [![License](https://img.shields.io/github/license/jeoor/kayro-secureguard-lite)](LICENSE)
 
-KernelSU 模块 · v2.0.5 · MIT
+KernelSU 模块 · v2.0.6 · MIT
 
 > 适用：存在 `oplus_secure_guard_new` 的 OPlus ColorOS 设备；KernelSU 需支持 initrc 注入
 > 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）
@@ -37,7 +37,7 @@ KernelSU 模块 · v2.0.5 · MIT
 
 不常驻、不实时监控。
 
-## 实测（v2.0.1/v2.0.2，early 与 v2.0.5 相同）
+## 实测（v2.0.1/v2.0.2，early 与 v2.0.6 相同）
 
 | 项目 | 结果 |
 |---|---|
@@ -46,17 +46,17 @@ KernelSU 模块 · v2.0.5 · MIT
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 假回锁 | green / 1 / locked 保持 |
 
-v2.0.5 增加 boot-completed 兜底卸载；early 自动卸载逻辑不变。
+v2.0.6 增加 boot-completed 兜底卸载；early 自动卸载逻辑不变。
 19.5s 的 `KERNEL_SECURITY_CHECK: Added` 是 560 个 `.ko` 表登记，不是加载。
 
 ## 安装
 
-1. 下载 [v2.0.5 Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.5) 的 ZIP。
+1. 下载 [v2.0.6 Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.6) 的 ZIP。
 2. 管理器安装，重启；点 Action 运行检测。
 
 ```text
-2,932 bytes
-SHA-256 bfdfe0fa176d3612dfc66dfb5da552abf449f75caa7e3d2f936d14c68c7760fe
+2,948 bytes
+SHA-256 c045be5f0e72b6f6e9c330921f98ac4d707083d6a49a9b76c91cd1c64e3bcd21
 ```
 
 只从本仓库 Release 下载并核对 SHA；不要用第三方转存。  
@@ -78,6 +78,6 @@ pwsh -NoProfile -File ./tests/verify.ps1   # 连续构建两次，校验一致�
 
 ## 链接
 
-[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.5) · [Issues](https://github.com/jeoor/kayro-secureguard-lite/issues) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
+[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.6) · [Issues](https://github.com/jeoor/kayro-secureguard-lite/issues) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
 
 参考：[KernelSU initrc](https://kernelsu.org/guide/module.html#initrc-injection) · [KernelSU #3908](https://github.com/tiann/KernelSU/pull/3908) · [gbl_root_canoe](https://github.com/1vivy/gbl_root_canoe) · [inte 归属](https://www.zhihu.com/question/2089675358908040541/answer/2092690033698460930)
