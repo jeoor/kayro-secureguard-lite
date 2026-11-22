@@ -31,22 +31,20 @@ try {
     finally { $archive.Dispose() }
 
     $prop = Get-Content 'module/module.prop' -Raw
-    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.2', 'versionCode=20002')) {
+    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.3', 'versionCode=20003')) {
         if (!$prop.Contains($needle)) { throw "module.prop missing $needle" }
     }
 
     $rc = Get-Content 'module/initrc/kayro_secureguard.rc' -Raw
     foreach ($needle in @(
             'service kayro_sg_early',
-            'service kayro_sg_final',
             'seclabel u:r:ksu:s0',
-            'on post-fs',
-            'on property:sys.boot_completed=1')) {
+            'on post-fs')) {
         if (!$rc.Contains($needle)) { throw "initrc missing $needle" }
     }
 
     $action = Get-Content 'module/action.sh' -Raw
-    foreach ($needle in @('oplus_secure_guard_new', 'override.description', 'need kill')) {
+    foreach ($needle in @('oplus_secure_guard_new', 'need kill')) {
         if (!$action.Contains($needle)) { throw "action.sh missing $needle" }
     }
 

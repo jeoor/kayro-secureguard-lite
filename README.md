@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/jeoor/kayro-secureguard-lite)](https://github.com/jeoor/kayro-secureguard-lite/releases/latest)
 [![License](https://img.shields.io/github/license/jeoor/kayro-secureguard-lite)](LICENSE)
 
-KernelSU 模块 · v2.0.2 · MIT
+KernelSU 模块 · v2.0.3 · MIT
 
 > 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）  
 > 定位：实测版
@@ -23,41 +23,39 @@ KernelSU 模块 · v2.0.2 · MIT
 
 ## 做法
 
-- KernelSU `initrc` 注入两个一次性服务。
-- `kayro_sg_early`：`on post-fs`，ksu 域轮询；目标出现即非强制 `rmmod`，失败重试，最多 6 秒。
+- KernelSU `initrc` 注入一个一次性服务 `kayro_sg_early`。
+- `on post-fs`，ksu 域轮询；目标出现即非强制 `rmmod`，失败重试，最多 6 秒。
 - 为什么是 post-fs：目标约 1.6s 加载、`ksud` 约 3.4s 被拦、`post-fs-data` 约 5s 才跑；模块脚本会太晚。
-- `kayro_sg_final`：`sys.boot_completed=1` 复核一次，并刷新卡片。
+- 不再有 `boot_completed` 自动复核，也不写卡片；检测只在点 Action 时运行。
 - 不用 `block_modules`/boot-patch：`oplus_secure_guard_new` 在 `modules.load.recovery` 中，启动期 block 有 recovery/假回锁风险。
 - 不用 `rmmod -f`：被引用时强制卸载可能崩溃。
 
-## 卡片与 Action
+## 检测
 
-卡片显示 `ACTIVE · SecureGuard 未加载 · 未观察到 ksud 拦截`。  
-点 Action 检测目标、拦截计数、`ksud` 执行并刷新卡片。
+卡片只显示静态描述。点 Action（三角）运行一次检测，输出目标、执行拦截、`need kill`、涉及 `ksud`、`ksud` 执行状态。
 
-卡片是快照：正常运行时目标不重载；boot 完成后的外部变化需点 Action。自动实时监控要常驻进程，违背零功耗，不做。
+不写卡片、不常驻、不实时监控。
 
-## 实测（v2.0.1，initrc 与 v2.0.2 相同）
+## 实测（v2.0.1/v2.0.2，early 与 v2.0.3 相同）
 
 | 项目 | 结果 |
 |---|---|
 | early | 2.19–2.96s 退出 0 |
-| final | 19.63–21.07s 退出 0 |
 | 目标 | 重启后未加载；256s 仍为 0 |
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 假回锁 | green / 1 / locked 保持 |
 
-v2.0.2 仅 Action/版本变更；启动逻辑与 v2.0.1 相同。  
+v2.0.3 只删除 `boot_completed` 复核与卡片写入；early 自动卸载逻辑不变。  
 19.5s 的 `KERNEL_SECURITY_CHECK: Added` 是 560 个 `.ko` 表登记，不是加载。
 
 ## 安装
 
-1. 下载 [v2.0.2 Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.2) 的 ZIP。
-2. 管理器安装，重启；点 Action 复核。
+1. 下载 [v2.0.3 Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.3) 的 ZIP。
+2. 管理器安装，重启；点 Action 运行检测。
 
 ```text
-2,891 bytes
-SHA-256 4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03
+2,485 bytes
+SHA-256 1f1dab82e48045e4e217464ebad9231b78b18849bfd16406d6f268a2137fb3c3
 ```
 
 只从本仓库 Release 下载并核对 SHA；不要用第三方转存。  
@@ -69,16 +67,15 @@ SHA-256 4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03
 pwsh -NoProfile -File ./tests/verify.ps1   # 连续构建两次，校验一致性与 ZIP 内容
 ```
 
-
 ## 边界
 
 - 仅 PLZ110 / ColorOS 17 / KSU 3.3.1 mainline / 免解 + 未修补 vendor_boot 实测；OTA、late-load、正常解锁、修补 vendor_boot 未验证。
-- KSU 文档明确 initrc 代码在安全模式下仍会执行；本模块 early 服务在 `post-fs` 运行，安全模式挡不住那次 `rmmod`。代码有 6s 超时、不阻塞、不改分区；依赖安全模式完全禁用者勿装。
+- KSU 文档明确 initrc 代码在安全模式下仍会执行；early 在 `post-fs` 运行，安全模式挡不住那次 `rmmod`。代码有 6s 超时、不阻塞、不改分区；依赖安全模式完全禁用者勿装。
 - 启动早期卸载厂商安全模块，长期/OTA 稳定性未验证（两轮重启通过）。
-- 卡片是快照，不是实时监控。
+- 卡片是静态描述；状态只在点 Action 时查看。
 
 ## 链接
 
-[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.2) · [Issues](https://github.com/jeoor/kayro-secureguard-lite/issues) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
+[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.3) · [Issues](https://github.com/jeoor/kayro-secureguard-lite/issues) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
 
 参考：[KernelSU initrc](https://kernelsu.org/guide/module.html#initrc-injection) · [KernelSU #3908](https://github.com/tiann/KernelSU/pull/3908) · [gbl_root_canoe](https://github.com/1vivy/gbl_root_canoe) · [inte 归属](https://www.zhihu.com/question/2089675358908040541/answer/2092690033698460930)

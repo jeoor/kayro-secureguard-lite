@@ -1,8 +1,8 @@
 #!/system/bin/sh
-# Action：单次诊断并刷新卡片；不常驻、不写持久配置。
+# Action：单次诊断，不常驻、不写配置。
 T=oplus_secure_guard_new
 KSUD=/data/adb/ksud
-V=2.0.2
+V=2.0.3
 
 if [ -r /proc/modules ]; then
     if grep -q "^$T " /proc/modules 2>/dev/null; then loaded=1; else loaded=0; fi
@@ -24,24 +24,6 @@ fi
 
 if [ -x "$KSUD" ] && "$KSUD" --version >/dev/null 2>&1; then ksud=ok; else ksud=fail; fi
 
-case "$loaded" in
-    1) if [ "$b" = unknown ]; then desc="WARN · SecureGuard 仍加载 · 日志不可读"; else desc="WARN · SecureGuard 仍加载 · 拦截 $b 次"; fi ;;
-    0)
-        if [ "$b" = unknown ]; then
-            desc="UNKNOWN · 目标未加载 · 日志不可读"
-        elif [ "$k" -gt 0 ]; then
-            desc="ACTIVE · 已卸载 · 历史拦截 $k 次"
-        else
-            desc="ACTIVE · SecureGuard 未加载 · 未观察到 ksud 拦截"
-        fi ;;
-    *) desc="UNKNOWN · /proc/modules 不可读" ;;
-esac
-if ! KSU_MODULE=kayro_secureguard "$KSUD" module config set --temp override.description "$desc" >/dev/null 2>&1; then
-    card=fail
-else
-    card=ok
-fi
-
 printf 'Kayro SecureGuard Lite v%s\n' "$V"
 printf '%s\n' '------------------------'
 case "$loaded" in
@@ -53,7 +35,6 @@ printf '执行拦截：%s 次\n' "$b"
 printf 'need kill：%s 次\n' "$k"
 printf '涉及 ksud：%s 次\n' "$s"
 if [ "$ksud" = ok ]; then printf 'ksud 执行：正常\n'; else printf 'ksud 执行：失败\n'; fi
-if [ "$card" = fail ]; then printf '卡片刷新：失败\n'; fi
 case "$loaded" in
     1) printf '结论：SecureGuard 仍在运行，可能继续拦截 ksud。\n' ;;
     0)

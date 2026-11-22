@@ -1,5 +1,5 @@
 # Kayro SecureGuard Lite
-# 目标在 /data 挂载前就已加载；post-fs 起在 ksu 域内联轮询。
+# 目标在 /data 挂载前就已加载；post-fs 起在 ksu 域轮询。
 # 目标出现后 rmmod；失败重试，最多 6 秒。
 service kayro_sg_early /system/bin/timeout 6 /system/bin/sh -c "while :; do if /system/bin/grep -q '^oplus_secure_guard_new ' /proc/modules 2>/dev/null; then /system/bin/rmmod oplus_secure_guard_new 2>/dev/null; /system/bin/grep -q '^oplus_secure_guard_new ' /proc/modules 2>/dev/null || exit 0; fi; /system/bin/sleep 0.1; done"
     user root
@@ -8,16 +8,5 @@ service kayro_sg_early /system/bin/timeout 6 /system/bin/sh -c "while :; do if /
     oneshot
     disabled
 
-# 开机完成后再一次性复核：若厂商在 boot 完成前重新加载，就地卸载并刷新卡片。
-service kayro_sg_final /system/bin/timeout 10 /system/bin/sh -c "if /system/bin/grep -q '^oplus_secure_guard_new ' /proc/modules 2>/dev/null; then /system/bin/rmmod oplus_secure_guard_new 2>/dev/null; fi; /system/bin/sh /data/adb/modules/kayro_secureguard/action.sh >/dev/null 2>&1"
-    user root
-    group root
-    seclabel u:r:ksu:s0
-    oneshot
-    disabled
-
 on post-fs
     start kayro_sg_early
-
-on property:sys.boot_completed=1
-    start kayro_sg_final
