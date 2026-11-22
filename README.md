@@ -6,7 +6,8 @@
 
 KernelSU 模块 · v2.0.4 · MIT
 
-> 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）  
+> 适用：存在 `oplus_secure_guard_new` 的 OPlus ColorOS 设备  
+> 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）
 > 定位：实测版
 
 ## 做什么
@@ -69,7 +70,7 @@ pwsh -NoProfile -File ./tests/verify.ps1   # 连续构建两次，校验一致�
 
 ## 边界
 
-- 仅 PLZ110 / ColorOS 17 / KSU 3.3.1 mainline / 免解 + 未修补 vendor_boot 实测；OTA、late-load、正常解锁、修补 vendor_boot 未验证。
+- 实测仅 PLZ110 / ColorOS 17 / KSU 3.3.1 mainline / 免解 + 未修补 vendor_boot；其它 ColorOS 机型/版本/root 方式未逐一验证，安装前先 `dmesg | grep secureguard_new` 确认同一模块。
 - KSU 文档明确 initrc 代码在安全模式下仍会执行；early 在 `post-fs` 运行，安全模式挡不住那次 `rmmod`。代码有 6s 超时、不阻塞、不改分区；依赖安全模式完全禁用者勿装。
 - 启动早期卸载厂商安全模块，长期/OTA 稳定性未验证（两轮重启通过）。
 - 卡片是快照，只显示卸载结论；不显示 ksud 检测信息。
