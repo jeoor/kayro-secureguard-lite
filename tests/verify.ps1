@@ -1,0 +1,51 @@
+[CmdletBinding()]
+param()
+
+$ErrorActionPreference = 'Stop'
+$root = Split-Path $PSScriptRoot -Parent
+Push-Location $root
+try {
+    & ./build.ps1 | Out-Null
+
+    $zip = Get-ChildItem 'dist/kayro_secureguard-*.zip' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if (!$zip) { throw 'No module ZIP found.' }
+
+    $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip.FullName).Hash.ToLowerInvariant()
+    $sha = (Get-Content "$($zip.FullName).sha256" -Raw).Trim()
+    if ($sha -notmatch "^$hash\s") { throw 'SHA-256 file does not match the ZIP.' }
+
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $archive = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
+    try {
+        $names = $archive.Entries.FullName -join ','
+        $expected = 'module.prop,action.sh,initrc/kayro_secureguard.rc,LICENSE'
+        if ($names -cne $expected) { throw "Unexpected ZIP entries: $names" }
+        foreach ($entry in $archive.Entries) {
+            if ($entry.Length -le 0) { throw "Empty ZIP entry: $($entry.FullName)" }
+        }
+    }
+    finally { $archive.Dispose() }
+
+    $prop = Get-Content 'module/module.prop' -Raw
+    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.1', 'versionCode=20001')) {
+        if (!$prop.Contains($needle)) { throw "module.prop missing $needle" }
+    }
+
+    $rc = Get-Content 'module/initrc/kayro_secureguard.rc' -Raw
+    foreach ($needle in @(
+            'service kayro_sg_early',
+            'service kayro_sg_final',
+            'seclabel u:r:ksu:s0',
+            'on post-fs',
+            'on property:sys.boot_completed=1')) {
+        if (!$rc.Contains($needle)) { throw "initrc missing $needle" }
+    }
+
+    $action = Get-Content 'module/action.sh' -Raw
+    foreach ($needle in @('oplus_secure_guard_new', 'override.description', 'need kill')) {
+        if (!$action.Contains($needle)) { throw "action.sh missing $needle" }
+    }
+
+    Write-Output "OK $($zip.Name) $($zip.Length) bytes SHA-256 $hash"
+}
+finally { Pop-Location }
