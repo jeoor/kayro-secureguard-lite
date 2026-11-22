@@ -2,7 +2,9 @@
 
 KernelSU 模块 · v2.0.1 · Kayro · MIT
 
-> 实测环境：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / **免解 + EFISP 伪回锁（维修部 vendor_boot）**。其它 root 环境未验证。
+> 实测环境：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / **免解 + EFISP 伪回锁（未修补 vendor_boot）**。其它 root 环境未验证。
+
+[![CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
 
 只做一件事：**开机早期卸载 `oplus_secure_guard_new`**，让 ColorOS SecureGuard 不再拦截、结束 `ksud`，也不再触发“安全警告”弹窗。无守护进程、无 WebUI、不修改分区、不改变回锁属性。
 
@@ -71,7 +73,7 @@ SHA-256 `9df6ce309b64dd262709b5a7b4d6c5146901553cfcad01bc100b8d070da50391`
 
 ## 适用性
 
-本机是 **免解 + EFISP 伪回锁（维修部 vendor_boot）** 环境。`need kill` 指向 `/data/adb/ksud`，机制上是 **root/ksud 执行触发**，不是伪回锁本身；免解/伪回锁是 PLZ110 上跑 ksud 的常见路径，所以现象集中在这类机器。正常解锁、其它 root 管理器或其它 ColorOS 版本未验证；安装前先看 `dmesg | grep secureguard_new` 是否有 `need kill`。
+本机是 **免解 + EFISP 伪回锁（未修补 vendor_boot）** 环境。`need kill` 指向 `/data/adb/ksud`，机制上是 **root/ksud 执行触发**，不是伪回锁本身；免解/伪回锁是 PLZ110 上跑 ksud 的常见路径，所以现象集中在这类机器。正常解锁、其它 root 管理器或其它 ColorOS 版本未验证；修补过 vendor_boot 的变体未纳入验证，本项目结论只覆盖未修补 vendor_boot。安装前先看 `dmesg | grep secureguard_new` 是否有 `need kill`。
 
 ## 边界
 

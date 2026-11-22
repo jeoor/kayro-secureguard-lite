@@ -10,7 +10,7 @@
 | 内核 | `6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | KernelSU | Manager/ksud 3.3.1（32680），UAPI 5，LKM，`late_load=false` |
 | SELinux | Enforcing |
-| Root 环境 | 免解 + EFISP 伪回锁（维修部 vendor_boot） |
+| Root 环境 | 免解 + EFISP 伪回锁（未修补 vendor_boot） |
 | 假回锁 | `fake_bl_efisp` / gbl_root_canoe（EFISP/ABL 层） |
 
 ## 根因

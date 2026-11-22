@@ -1,7 +1,7 @@
 # 一加 ColorOS 17：让 ksud 不再被 SecureGuard 结束
 
 > Kayro SecureGuard Lite v2.0.1 · KernelSU
-> 实测环境：一加 15T PLZ110 / ColorOS 17 / KSU 3.3.1 / 免解 + EFISP 伪回锁（维修部 vendor_boot）
+> 实测环境：一加 15T PLZ110 / ColorOS 17 / KSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）
 
 ## 问题
 
@@ -22,7 +22,7 @@
 
 ## 适用环境
 
-本机是 **免解 + EFISP 伪回锁（维修部 vendor_boot）** 环境。`need kill` 指向 `/data/adb/ksud`，机制上是 **root/ksud 执行触发**，不是伪回锁本身；免解/伪回锁是 PLZ110 上跑 ksud 的常见路径，所以现象集中在这类机器。正常解锁、其它 root 管理器或其它 ColorOS 版本未验证；先看 `dmesg | grep secureguard_new` 有没有 `need kill` 再决定。
+本机是 **免解 + EFISP 伪回锁（未修补 vendor_boot）** 环境。`need kill` 指向 `/data/adb/ksud`，机制上是 **root/ksud 执行触发**，不是伪回锁本身；免解/伪回锁是 PLZ110 上跑 ksud 的常见路径，所以现象集中在这类机器。正常解锁、其它 root 管理器或其它 ColorOS 版本未验证；修补过 vendor_boot 的变体未纳入验证，本项目结论只覆盖未修补 vendor_boot。先看 `dmesg | grep secureguard_new` 有没有 `need kill` 再决定。
 
 ## 做法
 

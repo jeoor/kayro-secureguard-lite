@@ -3,7 +3,7 @@
 日期：2026-11-22  
 设备：一加 15T `PLZ110`，ColorOS 17，KernelSU 3.3.1  
 模块：`kayro_secureguard` v2.0.1  
-环境：免解 + EFISP 伪回锁（维修部 vendor_boot）
+环境：免解 + EFISP 伪回锁（未修补 vendor_boot）
 
 ## 通过项
 
