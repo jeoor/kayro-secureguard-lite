@@ -2,7 +2,7 @@
 # Action：单次诊断，不常驻、不写配置。
 T=oplus_secure_guard_new
 KSUD=/data/adb/ksud
-V=2.0.8
+V=2.0.9
 
 if [ -r /proc/modules ]; then
     if grep -q "^$T " /proc/modules 2>/dev/null; then loaded=1; else loaded=0; fi
@@ -43,7 +43,7 @@ case "$loaded" in
         elif [ "$b" -gt 0 ] || [ "$k" -gt 0 ]; then
             printf '结论：本启动周期观察到 SecureGuard 拦截记录（execve_block %s，need kill %s）。\n' "$b" "$k"
         else
-            printf '结论：当前快照未观察到 SecureGuard 拦截 ksud；不保证未来或其它进程。\n'
+            printf '结论：当前快照未发现 SecureGuard 拦截 ksud。\n'
         fi ;;
     *) printf '结论：状态未知，无法判断 ksud 是否会被拦截。\n' ;;
 esac
