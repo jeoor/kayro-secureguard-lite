@@ -1,6 +1,9 @@
 #!/system/bin/sh
-# 开机完成只更新卡片结论，不统计检测信息。
+# 开机完成再兜底卸载一次，然后只写卡片结论，不统计检测信息。
 T=oplus_secure_guard_new
+if grep -q "^$T " /proc/modules 2>/dev/null; then
+    /system/bin/rmmod "$T" 2>/dev/null
+fi
 if grep -q "^$T " /proc/modules 2>/dev/null; then
     desc="⚠️ 未卸载"
 else
