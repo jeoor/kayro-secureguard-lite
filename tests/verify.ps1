@@ -31,7 +31,7 @@ try {
     finally { $archive.Dispose() }
 
     $prop = Get-Content 'module/module.prop' -Raw
-    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.9', 'versionCode=20009')) {
+    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.10', 'versionCode=20010')) {
         if (!$prop.Contains($needle)) { throw "module.prop missing $needle" }
     }
 

@@ -2,10 +2,16 @@
 # Action：单次诊断，不常驻、不写配置。
 T=oplus_secure_guard_new
 KSUD=/data/adb/ksud
-V=2.0.9
+V=2.0.10
 
 if [ -r /proc/modules ]; then
-    if grep -q "^$T " /proc/modules 2>/dev/null; then loaded=1; else loaded=0; fi
+    grep -q "^$T " /proc/modules 2>/dev/null
+    rc=$?
+    case "$rc" in
+        0) loaded=1 ;;
+        1) loaded=0 ;;
+        *) loaded=unknown ;;
+    esac
 else
     loaded=unknown
 fi
@@ -29,7 +35,7 @@ printf '%s\n' '------------------------'
 case "$loaded" in
     1) printf '目标：已加载\n' ;;
     0) printf '目标：未加载\n' ;;
-    *) printf '目标：未知（/proc/modules 不可读）\n' ;;
+    *) printf '目标：未知（/proc/modules 读取失败）\n' ;;
 esac
 printf '执行拦截：%s 次\n' "$b"
 printf 'need kill：%s 次\n' "$k"
