@@ -7,7 +7,7 @@
 KernelSU 模块 · v2.0.7 · MIT
 
 > 适用：存在 `oplus_secure_guard_new` 的 OPlus ColorOS 设备；KernelSU 需支持 initrc 注入
-> 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）
+> 实测：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / **官方完全解锁 + EFISP 伪回锁**（未修补 vendor_boot）
 > 定位：实测版
 
 ## 做什么
@@ -20,7 +20,7 @@ KernelSU 模块 · v2.0.7 · MIT
 
 日志里结束 `ksud` 的标签只有 `[secureguard_new]`。`inte`（腾讯 ACE）、`oplus_secure_common`（指纹支付）、`cdt_integrity` 不参与，保留。
 
-机制上是 **root/ksud 触发**，不是伪回锁本身；免解/伪回锁只是 PLZ110 上跑 ksud 的常见路径。修补过 vendor_boot 的变体未验证。
+机制上是 **root/ksud 触发**，不是伪回锁本身；官方完全解锁 + 伪回锁只是本机环境。修补过 vendor_boot 的变体未验证。
 
 ## 做法
 
