@@ -69,6 +69,6 @@ SHA-256 4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03
 
 ## 链接
 
-[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.2) · [酷安草稿](COOLAPK.md) · [安全设计](SAFETY.md) · [实机报告](DEVICE_REPORT.md)
+[源码](https://github.com/jeoor/kayro-secureguard-lite) · [Release](https://github.com/jeoor/kayro-secureguard-lite/releases/tag/v2.0.2) · [CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
 
 参考：[KernelSU initrc](https://kernelsu.org/guide/module.html#initrc-injection) · [KernelSU #3908](https://github.com/tiann/KernelSU/pull/3908) · [gbl_root_canoe](https://github.com/1vivy/gbl_root_canoe) · [inte 归属](https://www.zhihu.com/question/2089675358908040541/answer/2092690033698460930)

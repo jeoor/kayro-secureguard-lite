@@ -1,4 +1,14 @@
 .dsh-drop/
+.local-docs/
+COOLAPK.md
+CHANGELOG.md
+DEVICE_REPORT.md
+DEVICE_VALIDATION.md
+PROJECT_STATUS.md
+RECOVERY.md
+RESEARCH.md
+SAFETY.md
+TESTS.md
 dist/*.png
 *.log
 Thumbs.db
