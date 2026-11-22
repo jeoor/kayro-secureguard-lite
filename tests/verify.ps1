@@ -22,7 +22,7 @@ try {
     $archive = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
     try {
         $names = $archive.Entries.FullName -join ','
-        $expected = 'module.prop,action.sh,boot-completed.sh,initrc/kayro_secureguard.rc,LICENSE'
+        $expected = 'module.prop,action.sh,customize.sh,boot-completed.sh,initrc/kayro_secureguard.rc,LICENSE'
         if ($names -cne $expected) { throw "Unexpected ZIP entries: $names" }
         foreach ($entry in $archive.Entries) {
             if ($entry.Length -le 0) { throw "Empty ZIP entry: $($entry.FullName)" }
@@ -31,7 +31,7 @@ try {
     finally { $archive.Dispose() }
 
     $prop = Get-Content 'module/module.prop' -Raw
-    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.7', 'versionCode=20007')) {
+    foreach ($needle in @('id=kayro_secureguard', 'version=v2.0.8', 'versionCode=20008')) {
         if (!$prop.Contains($needle)) { throw "module.prop missing $needle" }
     }
 
@@ -52,6 +52,10 @@ try {
         if (!$boot.Contains($needle)) { throw "boot-completed.sh missing $needle" }
     }
 
+    $custom = Get-Content 'module/customize.sh' -Raw
+    foreach ($needle in @('ui_print', 'oplus_secure_guard_new', 'Target')) {
+        if (!$custom.Contains($needle)) { throw "customize.sh missing $needle" }
+    }
     Write-Output "OK $($zip.Name) $($zip.Length) bytes SHA-256 $hash1"
 }
 finally { Pop-Location }

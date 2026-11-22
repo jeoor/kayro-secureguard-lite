@@ -2,7 +2,7 @@
 # Action：单次诊断，不常驻、不写配置。
 T=oplus_secure_guard_new
 KSUD=/data/adb/ksud
-V=2.0.7
+V=2.0.8
 
 if [ -r /proc/modules ]; then
     if grep -q "^$T " /proc/modules 2>/dev/null; then loaded=1; else loaded=0; fi
