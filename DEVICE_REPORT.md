@@ -24,7 +24,7 @@
 
 约 4.9 秒还会拦截执行模块脚本的 busybox。因此 `post-fs-data.sh`（约 5 秒）执行 `rmmod` 已经太晚。
 
-## v2.0.1 结果
+## v2.0.1 实测（initrc 与 v2.0.2 相同）
 
 | 项目 | 结果 |
 |---|---|
@@ -33,7 +33,7 @@
 | 目标模块 | 连续重启后均未加载；256s 后仍为 0 |
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 常驻进程/告警 | 无 `ksud`/`kayro` 进程；无相关 alarm |
-| 卡片 | v2.0.1，动态描述 `ACTIVE · SecureGuard 已卸载 · 拦截 0 次` |
+| 卡片 | v2.0.1 动态描述正确；v2.0.2 只改 Action/版本，未实机安装 |
 | 假回锁属性 | `verifiedbootstate=green`、`flash.locked=1`、`vbmeta.device_state=locked` |
 | vendor_boot | `oplus_secure_guard_new.ko` 92,000 字节，原样存在 |
 | 模块字段 | enabled=true、action=true、web=false、update=false |
@@ -44,4 +44,4 @@
 
 ## 结论
 
-只卸载 `oplus_secure_guard_new` 即可消除对 `ksud` 的拦截；`inte`、`oplus_secure_common`、`cdt_integrity` 保持加载。模块不修改分区、不改回锁属性、不常驻。
+在本机实测中，只卸载 `oplus_secure_guard_new` 后未再观察到对 `ksud` 的拦截；`inte`、`oplus_secure_common`、`cdt_integrity` 保持加载。模块不修改分区、不改回锁属性、不常驻。

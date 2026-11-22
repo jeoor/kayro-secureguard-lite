@@ -2,7 +2,7 @@
 
 日期：2026-11-22  
 设备：一加 15T `PLZ110`，ColorOS 17，KernelSU 3.3.1  
-模块：`kayro_secureguard` v2.0.1  
+模块：`kayro_secureguard` v2.0.2  
 环境：免解 + EFISP 伪回锁（未修补 vendor_boot）
 
 ## 通过项
@@ -11,7 +11,7 @@
 - [x] 每次重启后 `oplus_secure_guard_new` 未加载；256s 后仍为 0。
 - [x] 30 次 `su` 后无新增 `execve_block` / `need kill`。
 - [x] 无 `ksud`/`kayro` 残留进程，无相关 alarm。
-- [x] 卡片 v2.0.1 动态描述正确；web=false。
+- [x] 卡片 v2.0.2 动态描述正确；web=false。
 - [x] `ro.boot.verifiedbootstate=green`、`flash.locked=1`、`vbmeta.device_state=locked` 保持。
 - [x] `vendor_boot` 中 `oplus_secure_guard_new.ko` 未改动。
 - [x] `fake_bl_efisp` 保持启用。

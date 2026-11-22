@@ -1,6 +1,6 @@
-# 一加 ColorOS 17：让 ksud 不再被 SecureGuard 结束
+# 一加 ColorOS 17 免解/伪回锁：SecureGuard 拦截 ksud 的实测与处理
 
-> Kayro SecureGuard Lite v2.0.1 · KernelSU
+> Kayro SecureGuard Lite v2.0.2 · KernelSU
 > 实测环境：一加 15T PLZ110 / ColorOS 17 / KSU 3.3.1 / 免解 + EFISP 伪回锁（未修补 vendor_boot）
 
 ## 问题
@@ -36,7 +36,7 @@
 模块卡片会显示：
 
 ```text
-ACTIVE · SecureGuard 已卸载 · 拦截 0 次
+ACTIVE · SecureGuard 未加载 · 未观察到 ksud 拦截
 ```
 
 点 Action 可随时重新检测并刷新卡片。
@@ -61,23 +61,25 @@ ACTIVE · SecureGuard 已卸载 · 拦截 0 次
 
 ## 安装
 
-1. 下载 Release 里的 `kayro_secureguard-v2.0.1.zip`。
+1. 下载 Release 里的 `kayro_secureguard-v2.0.2.zip`。
 2. KernelSU 管理器本地安装，重启。
 3. 开机后看模块卡片；点 Action 可复核。
 
 ```text
-SHA-256: 9df6ce309b64dd262709b5a7b4d6c5146901553cfcad01bc100b8d070da50391
+SHA-256: 4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03
 ```
 
 卸载或禁用模块并重启，`oplus_secure_guard_new` 会随系统正常加载，恢复原状。
 
 ## 注意
 
-- 仅 PLZ110 / ColorOS 17 / KernelSU 3.3.1 mainline + 免解/伪回锁环境实测；OTA、其它 ColorOS 版本、late-load、正常解锁环境未验证。
+- 仅 PLZ110 / ColorOS 17 / KernelSU 3.3.1 mainline + 免解/伪回锁（未修补 vendor_boot）环境实测；OTA、其它 ColorOS 版本、late-load、正常解锁、修补过 vendor_boot 的变体未验证。
+- v2.0.2 只修改 Action 诊断与版本；启动卸载逻辑的实机数据来自 v2.0.1（initrc 未变），v2.0.2 请自行安装验证。
 - 不是所有免解/伪回锁机器都一定触发；先看 `dmesg | grep secureguard_new`，有 `need kill` 再装。
 - Android 17 上部分 KernelSU-Next legacy 构建存在 initrc 注入静默失败；换管理器后先看 `dmesg | grep kayro_sg_`。
 - 这是有意移除厂商完整性检查，会降低 SecureGuard 的检测能力。
 - 卡片是快照；正常运行时目标不会重载，boot 完成后的外部变化需点 Action 刷新。自动实时监控需要常驻进程，会增加待机功耗，所以没做。
+- KernelSU 文档明确 initrc 代码在安全模式下仍会执行；本模块 early 服务在 post-fs 运行，安全模式无法阻止那次 rmmod。代码有超时且不阻塞/不改分区，但依赖安全模式完全禁用的话不要装。
 
 ## 开源
 

@@ -1,6 +1,6 @@
 id=kayro_secureguard
 name=Kayro SecureGuard Lite
-version=v2.0.1
-versionCode=20001
+version=v2.0.2
+versionCode=20002
 author=Kayro
 description=开机自动卸载 oplus_secure_guard_new · Action 检测 ksud 拦截

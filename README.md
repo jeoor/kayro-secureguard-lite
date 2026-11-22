@@ -1,12 +1,12 @@
 # Kayro SecureGuard Lite
 
-KernelSU 模块 · v2.0.1 · Kayro · MIT
+KernelSU 模块 · v2.0.2 · Kayro · MIT
 
 > 实测环境：一加 15T `PLZ110` / ColorOS 17 / KernelSU 3.3.1 / **免解 + EFISP 伪回锁（未修补 vendor_boot）**。其它 root 环境未验证。
 
 [![CI](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/jeoor/kayro-secureguard-lite/actions/workflows/ci.yml)
 
-只做一件事：**开机早期卸载 `oplus_secure_guard_new`**，让 ColorOS SecureGuard 不再拦截、结束 `ksud`，也不再触发“安全警告”弹窗。无守护进程、无 WebUI、不修改分区、不改变回锁属性。
+只做一件事：**开机早期卸载 `oplus_secure_guard_new`**；在本机实测中消除 SecureGuard 对 `ksud` 的拦截/结束与安全警告触发源。无守护进程、无 WebUI、不修改分区、不改变回锁属性。
 
 ## 为什么只卸一个模块
 
@@ -32,11 +32,11 @@ KernelSU 模块 · v2.0.1 · Kayro · MIT
 
 ## 卡片与 Action
 
-- 开机完成后 final 服务写一次 **临时 `override.description`**，卡片显示最后状态，例如 `ACTIVE · SecureGuard 已卸载 · 拦截 0 次`。
+- 开机完成后 final 服务写一次 **临时 `override.description`**，卡片显示最后状态，例如 `ACTIVE · SecureGuard 未加载 · 未观察到 ksud 拦截`。
 - 点 Action 立即重新检测并刷新卡片，输出目标状态、`execve_block`、`need kill`、涉及 `ksud` 次数。
 - 卡片是**快照**，不是实时监控：正常运行时目标不会被重新加载；若后期被外部事件改变，点 Action 刷新。自动实时刷新需要常驻守护进程，会违背“无额外功耗”，因此没有采用。
 
-## 实测结果（PLZ110 / ColorOS 17 / KernelSU 3.3.1）
+## v2.0.1 实测（initrc 与 v2.0.2 相同）
 
 | 项目 | 结果 |
 |---|---|
@@ -45,15 +45,16 @@ KernelSU 模块 · v2.0.1 · Kayro · MIT
 | 目标模块 | 连续重启后均未加载；256s 后仍为 0 |
 | 30 次 `su` | `execve_block 0`、`need kill 0`、涉及 `ksud 0` |
 | 常驻进程/告警 | 无 `ksud`/`kayro` 进程，无相关 alarm |
-| 卡片 | v2.0.1，动态描述正确，`web=false` |
+| 卡片 | v2.0.1 动态描述正确；v2.0.2 只改 Action/版本，未实机安装 |
 | 假回锁 | `verifiedbootstate=green`、`flash.locked=1`、`vbmeta.device_state=locked` 保持 |
 | vendor_boot | `oplus_secure_guard_new.ko` 原样存在，未改动 |
+> v2.0.2 只修改 Action 诊断与版本，initrc 卸载逻辑未变；按用户要求未在实机安装 v2.0.2。
 
 `KERNEL_SECURITY_CHECK: Added: oplus_secure_guard_new.ko` 是 OPlus ACE 在 19.5s 把 560 个 `.ko` 文件名登记进哈希表，不是加载模块；目标计数始终为 0。
 
 ## 安装
 
-1. 下载 [`kayro_secureguard-v2.0.1.zip`](dist/kayro_secureguard-v2.0.1.zip)，核对 SHA-256。
+1. 下载 [`kayro_secureguard-v2.0.2.zip`](dist/kayro_secureguard-v2.0.2.zip)，核对 SHA-256。
 2. 在 KernelSU 管理器中从本地安装，重启。
 3. 开机后卡片显示最终状态；Action 可随时复核。
 
@@ -68,8 +69,8 @@ initrc/kayro_secureguard.rc
 LICENSE
 ```
 
-ZIP 2,462 字节  
-SHA-256 `9df6ce309b64dd262709b5a7b4d6c5146901553cfcad01bc100b8d070da50391`
+ZIP 2,891 字节  
+SHA-256 `4cd0283e5ef1d85b9aa01941f6959090b244afd9187ba036aafe95cc7090fe03`
 
 ## 适用性
 
@@ -79,7 +80,8 @@ SHA-256 `9df6ce309b64dd262709b5a7b4d6c5146901553cfcad01bc100b8d070da50391`
 
 - 只验证 PLZ110 / ColorOS 17 / KernelSU 3.3.1；未验证 OTA 后固件、其它 ColorOS 版本或 late-load 模式。
 - Android 17 上部分 KernelSU-Next legacy/non-GKI 构建存在 initrc 注入静默失败（init 改为 fstat + 单次 read_iter）；本机 KernelSU 3.3.1 mainline 实测正常。若更换管理器/固件，请检查 `dmesg | grep kayro_sg_` 是否出现服务日志。
-- 这是有意移除厂商完整性检查，会降低 SecureGuard 的检测能力。
+- 这是有意移除厂商完整性检查，会降低 SecureGuard 的检测能力；启动早期卸载厂商安全模块，长期/OTA 稳定性未验证（两轮重启通过）。
+- KernelSU 文档明确：initrc 代码在安全模式下仍会执行。本模块 early 服务在 `post-fs` 运行，安全模式无法阻止这次 `rmmod`；代码有 6s 超时且不阻塞启动、不改分区，但若依赖安全模式完全禁用本模块，请不要安装。
 - 新固件若改变模块加载时机或名称，需要重新验证。
 
 ## 参考

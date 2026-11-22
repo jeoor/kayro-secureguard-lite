@@ -2,7 +2,7 @@
 param([string] $OutputDirectory = (Join-Path $PSScriptRoot 'dist'))
 
 $ErrorActionPreference = 'Stop'
-$version = 'v2.0.1'
+$version = 'v2.0.2'
 $entries = [ordered]@{
     'module.prop'        = @{ Path = 'module/module.prop'; Mode = (0x81a4 -shl 16) }
     'action.sh'          = @{ Path = 'module/action.sh'; Mode = (0x81ed -shl 16) }

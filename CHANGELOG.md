@@ -1,6 +1,14 @@
 # 变更记录
 
+## v2.0.2 · 2026-11-22
+
+- Action 修复：`/proc/modules` 不可读时显示 UNKNOWN，不再当成“未加载”。
+- `dmesg` 不可读时拦截计数显示 UNKNOWN；统计只匹配 `secureguard_new` 的 `execve_block`/`need kill`。
+- 增加 `ksud --version` 执行检查；结论改为“当前快照未观察到”，不再声称 ksud 永不被拦截。
+- 卡片写入失败会显式输出；版本提升，initrc 卸载逻辑未变。
+
 ## v2.0.1 · 2026-11-22
+
 
 - 增加 `on property:sys.boot_completed=1` 的一次性 final 服务：复核并在必要时卸载，同时刷新模块卡片。
 - 卡片改用临时 `override.description`：开机完成写一次，Action 点击时再写一次；无常驻、无轮询。
